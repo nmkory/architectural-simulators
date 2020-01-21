@@ -1,11 +1,12 @@
 pipesim: pipeline.o main.o
-	g++ pipeline.o main.o -g -o pipesim
+	g++ pipeline.o main.o -o pipesim
 
 pipeline.o: pipeline.cpp
-	g++ -g -c pipeline.cpp
+	g++ -c pipeline.cpp
 
 main.o: main.cpp
-	g++ -g -c main.cpp
+	g++ -c main.cpp
 
-clean:
+clean: 
 	rm *.o pipesim
+
