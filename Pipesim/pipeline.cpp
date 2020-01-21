@@ -26,10 +26,10 @@ Instruction::Instruction(void) {
 
 Instruction::Instruction(std::string newInst) {
 
-	std::string buf; 
-    	std::stringstream ss(newInst); 
+	std::string buf;
+    	std::stringstream ss(newInst);
 	std::vector<std::string> tokens;
-	
+
     	while (ss >> buf){
 		tokens.push_back(buf);
 	}
@@ -87,11 +87,11 @@ void Application::loadApplication(std::string fileName) {
 	Instruction *newInstruction;
 	std::ifstream infile;
 	infile.open(fileName.c_str(), std::ifstream::in);
-	
+
 	if ( !infile ) {
 		std::cout << "Failed to open file " << fileName << std::endl;
 		return;
-	}	
+	}
 
 	while (!infile.eof())
 	{
@@ -104,7 +104,7 @@ void Application::loadApplication(std::string fileName) {
 
 	infile.close();
 	std::cout << "Read file completed!!" << std::endl;
-	
+
 	printApplication();
 
 }
@@ -114,7 +114,7 @@ void Application::printApplication(void) {
 	std::cout << "Printing Application: " << std::endl;
 	std::vector<Instruction*>::iterator it;
 	for(it=instructions.begin(); it < instructions.end(); it++) {
-	
+
 		(*it)->printInstruction();
 		std::cout << std::endl;
 	}
@@ -129,27 +129,27 @@ Instruction* Application::getNextInstruction() {
 		nextInst = instructions[PC];
 		PC += 1;
 	}
-	
+
 	if( nextInst == NULL )
 		nextInst = new Instruction();
-	
+
 	return nextInst;
 }
 
 PipelineStage::PipelineStage(void) {
 	inst = new Instruction();
-	stageType = NONE;	
+	stageType = NONE;
 }
 
 void PipelineStage::clear() {
-	
+
 	inst = NULL;
 
 }
 
 
 void PipelineStage::process() {
-	
+
 	// Functionally simulate pipeline stage
 	// Since this simulator only models timing, this function currently does nothing
 	switch(stageType) {
@@ -165,7 +165,7 @@ void PipelineStage::process() {
 			break;
 		default:
 			break;
-	}	
+	}
 
 }
 
@@ -202,12 +202,12 @@ bool Pipeline::hasDependency(void) {
 	for(int i = EXEC; i < WB; i++) {
 
 		if( pipeline[i].inst == NULL )
-			continue;		
+			continue;
 
 		if( pipeline[i].inst->type == NOP )
 			continue;
 
-		if( (pipeline[i].inst->dest != -1) && 
+		if( (pipeline[i].inst->dest != -1) &&
 		    (pipeline[i].inst->dest == pipeline[DECODE].inst->src1 ||
 		     pipeline[i].inst->dest == pipeline[DECODE].inst->src2) ) {
 			return true;
@@ -223,47 +223,47 @@ void Pipeline::cycle(void) {
 
 	cycleTime += 1;
 	// Check for data hazards
-	// NOTE: Technically, data hazards are detected in the Decode stage. If a data hazard is detected, at the end of the cycle we write 0's (NOP) to the pipeline register so that a NOP will be generated in the EXEC stage in the next cycle. 
+	// NOTE: Technically, data hazards are detected in the Decode stage. If a data hazard is detected, at the end of the cycle we write 0's (NOP) to the pipeline register so that a NOP will be generated in the EXEC stage in the next cycle.
 	// Doing the check here does a dependency check on the instructions in the previous cycle (we haven't advanced the instructions in the pipeline yet). If a dependency exist in the previous cycle, we stall the pipeline in this cycle.
 	bool dependencyDetected = hasDependency();
 
 
 	// WRITEBACK STAGE
 	// Mem -> WB Pipeline register
-	pipeline[WB].addInstruction(pipeline[MEM].inst);	
+	pipeline[WB].addInstruction(pipeline[MEM].inst);
 
 	// Writeback
 	pipeline[WB].process();
 
 	// MEM STAGE
 	// Exec -> Mem Pipeline register
-	pipeline[MEM].addInstruction(pipeline[EXEC].inst);	
-	
+	pipeline[MEM].addInstruction(pipeline[EXEC].inst);
+
 	// Mem
 	pipeline[MEM].process();
-	
+
         // EXEC STAGE
 	// Decode -> Exec Pipeline register
 	// If dependency detected, stall by inserting NOP instruction
-	if(!dependencyDetected)
-		pipeline[EXEC].addInstruction(pipeline[DECODE].inst);	
-	else 
+	if(!dependencyDetected || forwarding)
+		pipeline[EXEC].addInstruction(pipeline[DECODE].inst);
+	else
 		pipeline[EXEC].addInstruction(new Instruction());
-	
+
 	// Exec
 	pipeline[EXEC].process();
-	
+
 	// DECODE STAGE
 	// Fetch -> Decode Pipeline register
-	if(!dependencyDetected)
-		pipeline[DECODE].addInstruction(pipeline[FETCH].inst);	
+	if(!dependencyDetected || forwarding)
+		pipeline[DECODE].addInstruction(pipeline[FETCH].inst);
 
-	// Decode 
+	// Decode
 	pipeline[DECODE].process();
-	
+
 	// FETCH STAGE
 	// Fetch
-	if(!dependencyDetected){
+	if(!dependencyDetected || forwarding){
 		pipeline[FETCH].addInstruction(application->getNextInstruction());
 		pipeline[FETCH].process();
 	}
@@ -287,9 +287,9 @@ void Pipeline::printPipeline(void) {
 
 	if(cycleTime == 0)
 		std::cout << "Cycle" << "\tIF" << "\t\tID" << "\t\tEXEC" << "\t\tMEM" << "\t\tWB" << std::endl;
-	std:: cout << cycleTime; 
+	std:: cout << cycleTime;
 	for(int i = 0; i < 5; i++) {
-		
+
 		pipeline[i].printStage();
 
 	}
@@ -310,6 +310,6 @@ void Instruction::printInstruction(void) {
 		std::cout << instructionNames[type] << " r" << src1 << " r" << src2;
 	else if(type == LW)
 		std::cout << instructionNames[type] << " r" << dest << " r" << src1;
-	else 
+	else
 		std::cout << instructionNames[type] << " r" << dest << " r" << src1 << " r" << src2;
 }
