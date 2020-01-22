@@ -210,8 +210,7 @@ bool Pipeline::hasDependency(void) {
 		if( (pipeline[i].inst->dest != -1) &&
 		    (pipeline[i].inst->dest == pipeline[DECODE].inst->src1 ||
 		     pipeline[i].inst->dest == pipeline[DECODE].inst->src2) ) {
-           if (!forwarding || (pipeline[i].inst->type == LW && i == EXEC) 
-                           || (pipeline[i].inst->type == SW && i == EXEC)) {
+           if (!forwarding || (pipeline[i].inst->type == LW && i == EXEC)) {
              return true;
            }
            else {
