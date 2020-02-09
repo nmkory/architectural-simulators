@@ -13,14 +13,18 @@ BranchHistoryTable::BranchHistoryTable() {
 
 
 BranchHistory::BranchHistory(int m, int n) {
-  if (m == 1)
+  if (m == 0) {
+    numTables = 1;
+    table = new BranchHistoryTable[numTables];
+  }
+  else  {
+    numTables = 64;
+    table = new BranchHistoryTable[numTables];
+  }
+  if (n == 1)
     twoBit = false;
   else
     twoBit = true;
-  if (n == 0)
-    table = new BranchHistoryTable[1];
-  else
-    table = new BranchHistoryTable[64];
 }
 
 float BranchHistory::makePrediction(ifstream &myReadFile) {
@@ -33,14 +37,56 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
       pc = (pc & 0xFF);
 
       prediction = table[globalHistory].predictions[pc];
-      if ((prediction == 0 && tont == "T") || (prediction == 1 && tont == "N")) {
-        miss++;
-        if (tont == "N")
-          table[globalHistory].predictions[pc] = 0;
-        else
-          table[globalHistory].predictions[pc] = 1;
+      if (twoBit == false) {
+        if ((prediction == 0 && tont == "T") || (prediction == 1 && tont == "N")) {
+          miss++;
+          if (tont == "N")
+            table[globalHistory].predictions[pc] = 0;
+          else
+            table[globalHistory].predictions[pc] = 1;
+        }
       }
-  };
+
+      else {
+        switch (prediction) {
+          case 0 :  //strong not taken
+            if (tont == "T") {
+              miss++;
+              table[globalHistory].predictions[pc] = 1;
+            }
+            break;
+          case 1 :  //weak not taken
+            if (tont == "T") {
+              miss++;
+              table[globalHistory].predictions[pc] = 3;
+            }
+            else
+              table[globalHistory].predictions[pc] = 0;
+            break;
+          case 2 :  //weak taken
+            if (tont == "T")
+              table[globalHistory].predictions[pc] = 3;
+            else {
+              miss++;
+              table[globalHistory].predictions[pc] = 0;
+            }
+            break;
+          case 3 :  //strong taken
+            if (tont == "N") {
+              miss++;
+              table[globalHistory].predictions[pc] = 2;
+            }
+            break;
+        }
+      }
+
+      if (numTables != 1) {
+        globalHistory = (globalHistory >> 1);
+        if (tont == "T") {
+          globalHistory = globalHistory | 0b100000;
+        }
+      }
+  }
   std::cout << (miss / count)*100 << "%" << '\n';
   return (miss / count)*100;
 }

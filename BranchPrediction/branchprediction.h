@@ -27,6 +27,7 @@ public:
   bool twoBit;
   float count = 0;
   float miss = 0;
+  int numTables;
   BranchHistory(int m, int n);
   float makePrediction(ifstream &myReadFile);
 };
