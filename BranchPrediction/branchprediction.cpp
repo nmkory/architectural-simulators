@@ -4,6 +4,7 @@
 #include <string>
 #include <bits/stdc++.h>
 
+using namespace std;
 
 BranchHistoryTable::BranchHistoryTable() {
   predictions = new predictor[256];
@@ -20,4 +21,14 @@ BranchHistory::BranchHistory(int m, int n) {
     table = new BranchHistoryTable[1];
   else
     table = new BranchHistoryTable[64];
+}
+
+float BranchHistory::makePrediction(ifstream &myReadFile) {
+  string pc;  //program counter
+  string tont;  //taken or not taken
+  while((myReadFile >> pc).good()) {
+      myReadFile >> tont;
+      cout << pc << tont << endl;
+  };
+  return 0;
 }

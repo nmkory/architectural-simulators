@@ -1,5 +1,9 @@
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
 
+using namespace std;
 
 struct predictor {
  // two-bit unsigned field,
@@ -8,19 +12,21 @@ struct predictor {
 
 
 class BranchHistoryTable {
+  predictor* predictions;
+public:
+  BranchHistoryTable();
 
-	public:
-    BranchHistoryTable();
-    predictor* predictions;
 };
 
 
 
 class BranchHistory {
-
-	public:
-    BranchHistory(int m, int n);
-		BranchHistoryTable *table;
-    int globalHistory = 0;
-    bool twoBit;
+  BranchHistoryTable *table;
+  int globalHistory = 0;
+  bool twoBit;
+  float count = 0;
+  float correct = 0;
+public:
+  BranchHistory(int m, int n);
+  float makePrediction(ifstream &myReadFile);
 };
