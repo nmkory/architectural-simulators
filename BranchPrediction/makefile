@@ -1,11 +1,11 @@
-pipesim: pipeline.o main.o
-	g++ pipeline.o main.o -g -o pipesim
+branchsim: branchprediction.o main.o
+	g++ branchprediction.o main.o -g -o branchsim
 
-pipeline.o: pipeline.cpp
-	g++ -c -g pipeline.cpp
+branchprediction.o: branchprediction.cpp
+	g++ -c -g branchprediction.cpp
 
 main.o: main.cpp
 	g++ -c -g main.cpp
 
 clean:
-	rm *.o pipesim
+	rm *.o branchsim

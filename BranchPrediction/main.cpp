@@ -1,6 +1,6 @@
 #include <iostream>
 #include "unistd.h"
-#include "pipeline.h"
+#include "branchprediction.h"
 #include <stdlib.h>
 #include <stdio.h>
 
