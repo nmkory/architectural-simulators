@@ -7,7 +7,7 @@
 using namespace std;
 
 BranchHistoryTable::BranchHistoryTable() {
-  predictions = new predictor[256];
+  predictions = new uint8_t[256];
   memset(predictions, 0, sizeof(predictions));
 }
 

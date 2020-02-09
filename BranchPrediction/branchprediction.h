@@ -5,14 +5,14 @@
 
 using namespace std;
 
-struct predictor {
- // two-bit unsigned field,
- uint8_t twobits : 2;
-};
+// struct predictor {
+//  // two-bit unsigned field,
+//  uint8_t twobits : 2;
+// };
 
 
 class BranchHistoryTable {
-  predictor* predictions;
+  uint8_t* predictions;
 public:
   BranchHistoryTable();
 

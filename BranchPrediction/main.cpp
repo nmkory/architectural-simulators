@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+
   ifstream myReadFile;
   myReadFile.open(argv[1]);
   int m = atoi(argv[2]);
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   BranchHistory branchsim = BranchHistory(m, n);
   float result = branchsim.makePrediction(myReadFile);
-  
+
   myReadFile.close();
   return 0;
 }
