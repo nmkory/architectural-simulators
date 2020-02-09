@@ -12,8 +12,8 @@ using namespace std;
 
 
 class BranchHistoryTable {
-  uint8_t* predictions;
 public:
+  uint8_t* predictions;
   BranchHistoryTable();
 
 };
@@ -21,12 +21,12 @@ public:
 
 
 class BranchHistory {
+public:
   BranchHistoryTable *table;
   int globalHistory = 0;
   bool twoBit;
   float count = 0;
-  float correct = 0;
-public:
+  float miss = 0;
   BranchHistory(int m, int n);
   float makePrediction(ifstream &myReadFile);
 };

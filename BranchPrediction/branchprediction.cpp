@@ -24,11 +24,23 @@ BranchHistory::BranchHistory(int m, int n) {
 }
 
 float BranchHistory::makePrediction(ifstream &myReadFile) {
-  string pc;  //program counter
+  int pc;  //program counter
   string tont;  //taken or not taken
-  while((myReadFile >> pc).good()) {
+  int prediction;
+  while((myReadFile >> hex >> pc).good()) {
+      count++;
       myReadFile >> tont;
-      cout << pc << tont << endl;
+      pc = (pc & 0xFF);
+
+      prediction = table[globalHistory].predictions[pc];
+      if ((prediction == 0 && tont == "T") || (prediction == 1 && tont == "N")) {
+        miss++;
+        if (tont == "N")
+          table[globalHistory].predictions[pc] = 0;
+        else
+          table[globalHistory].predictions[pc] = 1;
+      }
   };
-  return 0;
+  std::cout << (miss / count)*100 << "%" << '\n';
+  return (miss / count)*100;
 }
