@@ -8,7 +8,9 @@ using namespace std;
 
 BranchHistoryTable::BranchHistoryTable() {
   predictions = new uint8_t[256];
+  //used = new uint8_t[256];  //question 4
   memset(predictions, 0, sizeof(predictions));
+  //memset(predictions, 0, sizeof(used));  //question 4
 }
 
 
@@ -37,6 +39,12 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
       pc = (pc & 0xFF);
 
       prediction = table[globalHistory].predictions[pc];
+      /*  //question 4
+      if (table[globalHistory].used[pc] == 0) {
+        table[globalHistory].used[pc]++;
+        numUsed++;
+        }
+      */  //question 4
       if (twoBit == false) {
         if ((prediction == 0 && tont == "T") || (prediction == 1 && tont == "N")) {
           miss++;
@@ -88,5 +96,6 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
       }
   }
   std::cout << (miss / count)*100 << "%" << '\n';
+  // std::cout << "Num used:" << numUsed << '\n';  //question 4
   return (miss / count)*100;
 }

@@ -15,6 +15,7 @@ class BranchHistoryTable {
 public:
   uint8_t* predictions;
   BranchHistoryTable();
+  //uint8_t* used; //question 4
 
 };
 
@@ -27,6 +28,7 @@ public:
   bool twoBit;
   float count = 0;
   float miss = 0;
+  //int numUsed = 0;  //question 4
   int numTables;
   BranchHistory(int m, int n);
   float makePrediction(ifstream &myReadFile);
