@@ -16,6 +16,15 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  if (!((*argv[2] == '0') || (*argv[2] == '6'))) {
+    std::cout << "intM can only be 0 or 6" << '\n';
+    return 0;
+  }
+
+  if (!((*argv[3] == '1') || (*argv[3] == '2'))) {
+    std::cout << "intN can only be 1 or 2" << '\n';
+    return 0;
+  }
 
   ifstream myReadFile;
   myReadFile.open(argv[1]);
