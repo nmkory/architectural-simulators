@@ -12,10 +12,11 @@ Cache::Cache(int ways, int numSets) {
   this->sets = new list <Block> *[numSets];
   for (int i = 0; i < numSets; i++) {
     sets[i] = new list <Block>(ways);
-    for (auto it = sets[i]->cbegin(); it != sets[i]->cend(); it++) {
-        cout << *it << " | ";
-    }
-    cout << "\n";
+    //print cache
+    // for (auto it = sets[i]->cbegin(); it != sets[i]->cend(); it++) {
+    //     cout << " | " << *it << " | ";
+    // }
+    // cout << "\n";
   }
 };
 
@@ -28,8 +29,8 @@ void Cache::search(int setNum, int tagNum) {
   for (auto it = sets[setNum]->cbegin(); it != sets[setNum]->cend(); it++) {
       if ((*it).tag == tagNum) {
         hits++;
-        sets[setNum]->emplace_front(recentlyUsed);
         sets[setNum]->erase(it);
+        sets[setNum]->emplace_front(recentlyUsed);
         return;
       }
   }
@@ -68,6 +69,14 @@ CacheSim::CacheSim(int cacheSize, int blockSize, int numWays) {
 }
 
 
+int CacheSim::createSetMask(int numIndexBits) {
+  int setMask = 0;
+  for (int i = 0; i < numIndexBits; i++) {
+    setMask <<= 1;
+    setMask |= 1;
+  }
+  return setMask;
+}
 
 
 void CacheSim::runSim(ifstream &myReadFile) {
@@ -76,14 +85,10 @@ void CacheSim::runSim(ifstream &myReadFile) {
   unsigned long long memAddr; //memory address
   int setNum;
   int tagNum;
-  int setMask = 0;
+  float missRate;
+  int setMask = createSetMask(numIndexBits);
 
-  for (int i = 0; i < numIndexBits; i++) {
-    setMask <<= 1;
-    setMask |= 1;
-  }
-
-  std::cout << setMask << '\n';
+  //cout << setMask << '\n';
 
   while((myReadFile >> ins).good()) {
       myReadFile >> insOffset;
@@ -93,8 +98,19 @@ void CacheSim::runSim(ifstream &myReadFile) {
       tagNum = memAddr >> (numIndexBits + numOffsetBits);
       setNum = (memAddr >> numOffsetBits) & setMask;
       cache->search(setNum, tagNum);
-
   }
-  std::cout << "hits:" << cache->hits << '\n';
-  std::cout << "misses:" << cache->misses << '\n';
+
+  missRate = (cache->misses) / (cache->misses + cache->hits);
+
+  // std::cout << cache->misses << '\n';
+  // std::cout << cache->hits << '\n';
+
+  cout << fixed << setprecision(2);
+  cout << "Miss rate: " << missRate << '\n';
+  cout << "Hit rate: " << 1 - missRate << '\n';
+  cout << "# of sets: " << sets << '\n';
+  cout << "# of ways: " << ways << '\n';
+  cout << "# of tag bits: " << numTagBits << '\n';
+  cout << "# of index bits: " << numIndexBits << '\n';
+  cout << "# of offset bits: " << numOffsetBits << '\n';
 }

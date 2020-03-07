@@ -20,8 +20,8 @@ public:
 
 class Cache {
 public:
-  int hits = 0;
-  int misses = 0;
+  float hits = 0;
+  float misses = 0;
   list <Block> **sets;
   Cache(int ways, int sets);
   void search(int setNum, int tagNum);
@@ -40,5 +40,6 @@ public:
   int numOffsetBits;
   Cache *cache;
   CacheSim(int cacheSize, int blockSize, int numWays);
+  int createSetMask(int numIndexBits);
   void runSim(ifstream &myReadFile);
 };
