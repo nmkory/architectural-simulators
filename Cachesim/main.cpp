@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
 
 
   CacheSim cachesim = CacheSim(cacheSize, blockSize, numWays);
+  cachesim.runSim(myReadFile);
   // BranchHistory branchsim = BranchHistory(m, n);
   // float result = branchsim.makePrediction(myReadFile);
 
