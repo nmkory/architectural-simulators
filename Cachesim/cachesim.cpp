@@ -46,6 +46,7 @@ CacheSim::CacheSim(int cacheSize, int blockSize, int numWays) {
   this->cacheSize = cacheSize;
   blockSizeInBytes = blockSize;
   cacheSizeInBlocks = (cacheSize / blockSize);
+
   switch (numWays) {
     case 0:
       //fully	associative
@@ -55,12 +56,12 @@ CacheSim::CacheSim(int cacheSize, int blockSize, int numWays) {
     case 1:
       //direct
       ways = 1;
-      sets = cacheSize / blockSizeInBytes;
+      sets = this->cacheSize / blockSizeInBytes;
       break;
     default:
       //set	associative
       ways = numWays;
-      sets = cacheSize / (blockSizeInBytes * ways);
+      sets = this->cacheSize / (blockSizeInBytes * ways);
   }
   numIndexBits = log2(sets);
   numOffsetBits = log2(blockSizeInBytes);
@@ -102,9 +103,9 @@ void CacheSim::runSim(ifstream &myReadFile) {
 
   missRate = (cache->misses) / (cache->misses + cache->hits);
 
-  // std::cout << cache->misses << '\n';
-  // std::cout << cache->hits << '\n';
-
+  std::cout << cache->misses << '\n';
+  std::cout << cache->hits << '\n';
+  std::cout << "# of cache blocks: " << cacheSizeInBlocks << '\n';
   cout << fixed << setprecision(2);
   cout << "Miss rate: " << missRate << '\n';
   cout << "Hit rate: " << 1 - missRate << '\n';
