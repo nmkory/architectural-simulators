@@ -32,6 +32,8 @@ int main(int argc, char *argv[]) {
   int blockSize = atoi(argv[3]);
   int numWays  = atoi(argv[4]);
 
+
+  CacheSim cachesim = CacheSim(cacheSize, blockSize, numWays);
   // BranchHistory branchsim = BranchHistory(m, n);
   // float result = branchsim.makePrediction(myReadFile);
 
