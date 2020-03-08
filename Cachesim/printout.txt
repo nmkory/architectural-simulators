@@ -1,0 +1,79 @@
+$ ./cachesim.exe gcc-10K.memtrace 512 16 1
+direct
+Miss rate: 0.0762
+Hit rate: 0.9238
+# of sets: 32768
+# of ways: 1
+# of tag bits: 13
+# of index bits: 15
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-10K.memtrace 512 16 2
+2-way
+Miss rate: 0.0756
+Hit rate: 0.9244
+# of sets: 16384
+# of ways: 2
+# of tag bits: 14
+# of index bits: 14
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-10K.memtrace 512 16 4
+4-way
+Miss rate: 0.0756
+Hit rate: 0.9244
+# of sets: 8192
+# of ways: 4
+# of tag bits: 15
+# of index bits: 13
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-10K.memtrace 512 16 0
+fully   associative
+Miss rate: 0.0756
+Hit rate: 0.9244
+# of sets: 1
+# of ways: 32768
+# of tag bits: 28
+# of index bits: 0
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-1M.memtrace 512 16 1
+direct
+Miss rate: 0.0124
+Hit rate: 0.9876
+# of sets: 32768
+# of ways: 1
+# of tag bits: 13
+# of index bits: 15
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-1M.memtrace 512 16 2
+2-way
+Miss rate: 0.0094
+Hit rate: 0.9906
+# of sets: 16384
+# of ways: 2
+# of tag bits: 14
+# of index bits: 14
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-1M.memtrace 512 16 4
+4-way
+Miss rate: 0.0092
+Hit rate: 0.9908
+# of sets: 8192
+# of ways: 4
+# of tag bits: 15
+# of index bits: 13
+# of offset bits: 4
+
+$ ./cachesim.exe gcc-1M.memtrace 512 16 0
+fully   associative
+Miss rate: 0.0092
+Hit rate: 0.9908
+# of sets: 1
+# of ways: 32768
+# of tag bits: 28
+# of index bits: 0
+# of offset bits: 4
