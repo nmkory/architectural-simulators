@@ -96,17 +96,20 @@ void CacheSim::runSim(ifstream &myReadFile) {
 
   while((myReadFile >> ins).good()) {
       myReadFile >> dec >> insOffset;
-      std::cout << "insOffset: " << dec << insOffset << '\n';
+      //std::cout << "insOffset: " << dec << insOffset << '\n';
       myReadFile >> hex >> memAddr;
-      std::cout << "memAddr" << hex << memAddr << '\n';
+      //std::cout << "memAddr" << hex << memAddr << '\n';
       memAddr += insOffset;
       memAddr = (memAddr & 0xFFFFFFFF);
       tagNum = memAddr >> (numIndexBits + numOffsetBits);
+      //std::cout << "tagNum: " << dec << tagNum << '\n';
       setNum = (memAddr >> numOffsetBits) & setMask;
+      //std::cout << "setNum: " << dec << setNum << '\n';
       cache->search(setNum, tagNum);
   }
 
   missRate = (cache->misses) / (cache->misses + cache->hits);
+  cout << dec;
 
   std::cout << cache->misses << '\n';
   std::cout << cache->hits << '\n';
