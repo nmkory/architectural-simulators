@@ -28,6 +28,7 @@ class BranchHistory {
 public:
   BranchHistoryTable *table;
   LocalHistory *localHistory;
+  uint8_t tournPicker = 0;
   int globalHistory = 0;
   bool twoBit;
   float count = 0;
@@ -35,5 +36,6 @@ public:
   //int numUsed = 0;  //question 4
   int numTables;
   BranchHistory(int m, int n);
+  void updatePicker(bool globalMiss, bool localMiss);
   float makePrediction(ifstream &myReadFile);
 };

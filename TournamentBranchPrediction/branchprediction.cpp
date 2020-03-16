@@ -87,6 +87,38 @@ BranchHistory::BranchHistory(int m, int n) {
 }
 
 
+void BranchHistory::updatePicker(bool globalMiss, bool localMiss) {
+  switch (tournPicker) {
+    case 0 :  //strong global
+      if (globalMiss && !localMiss) {
+        tournPicker = 1;
+      }
+      break;
+    case 1 :  //weak global
+      if (globalMiss && !localMiss) {
+        tournPicker = 2;
+      }
+      else if (!globalMiss && localMiss) {
+        tournPicker = 0;
+      }
+      break;
+    case 2 :  //weak local
+      if (!globalMiss && localMiss) {
+        tournPicker = 1;
+      }
+      else if (globalMiss && !localMiss) {
+        tournPicker = 3;
+      }
+      break;
+    case 3 :  //strong local
+      if (!globalMiss && localMiss) {
+        tournPicker = 2;
+      }
+      break;
+  }
+}
+
+
 float BranchHistory::makePrediction(ifstream &myReadFile) {
   int pc;  //program counter
   string tont;  //taken or not taken
@@ -157,13 +189,19 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
 
       bool localMiss = localHistory->makePrediction(pc, tont);
 
-
-      if (globalMiss) {
-        miss++;
+      if (tournPicker < 2) {
+        if (globalMiss) {
+          miss++;
+        }
       }
 
+      else {
+        if (localMiss) {
+          miss++;
+        }
+      }
 
-
+      updatePicker(globalMiss, localMiss);
 
   }  //end of while loop
   std::cout << (miss / count)*100 << "%" << '\n';
