@@ -28,7 +28,7 @@ class BranchHistory {
 public:
   BranchHistoryTable *table;
   LocalHistory *localHistory;
-  uint8_t tournPicker = 0;
+  uint8_t tournPicker = 3;
   int globalHistory = 0;
   bool twoBit;
   float count = 0;
