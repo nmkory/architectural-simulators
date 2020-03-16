@@ -1,13 +1,12 @@
-# BranchPrediction Lab 2
+# TournamentBranchPrediction Final Project
 
 Nicholas Kory\
 SID 862189331\
 CS 203: Advanced Computer Architecture\
-February 10, 2020
+March 16, 2020
 
 
 ## Installation
-
 Compile the program using the makefile.
 ```bash
 make
