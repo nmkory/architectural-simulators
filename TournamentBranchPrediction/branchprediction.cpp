@@ -22,7 +22,50 @@ LocalHistory::LocalHistory() {
 
 
 bool LocalHistory::makePrediction(int pc, string tont) {
-  return false;
+  int branch = pc & 0b1111;
+  int index = localBranchHistory[branch];
+  int prediction = localTable[0].predictions[index];
+  bool localMiss = false;
+
+  switch (prediction) {
+    case 0 :  //strong not taken
+      if (tont == "T") {
+        localMiss = true;
+        localTable[0].predictions[index] = 1;
+      }
+      break;
+    case 1 :  //weak not taken
+      if (tont == "T") {
+        localMiss = true;
+        localTable[0].predictions[index] = 3;
+      }
+      else
+        localTable[0].predictions[index] = 0;
+      break;
+    case 2 :  //weak taken
+      if (tont == "T")
+        localTable[0].predictions[index] = 3;
+      else {
+        localMiss = true;
+        localTable[0].predictions[index] = 0;
+      }
+      break;
+    case 3 :  //strong taken
+      if (tont == "N") {
+        localMiss = true;
+        localTable[0].predictions[index] = 2;
+      }
+      break;
+  }
+
+  int newIndex = index;
+  newIndex = (newIndex >> 1);
+  if (tont == "T") {
+    newIndex = newIndex | 0b100000;
+  }
+  localBranchHistory[branch] = newIndex;
+
+  return localMiss;
 }
 
 
@@ -42,6 +85,7 @@ BranchHistory::BranchHistory(int m, int n) {
 
   localHistory = new LocalHistory();
 }
+
 
 float BranchHistory::makePrediction(ifstream &myReadFile) {
   int pc;  //program counter
@@ -104,19 +148,24 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
         }
       }
 
-      if (globalMiss) {
-        miss++;
-      }
-
-
-
       if (numTables != 1) {
         globalHistory = (globalHistory >> 1);
         if (tont == "T") {
           globalHistory = globalHistory | 0b100000;
         }
       }
-  }
+
+      bool localMiss = localHistory->makePrediction(pc, tont);
+
+
+      if (globalMiss) {
+        miss++;
+      }
+
+
+
+
+  }  //end of while loop
   std::cout << (miss / count)*100 << "%" << '\n';
   // std::cout << "Num used:" << numUsed << '\n';  //question 4
   return (miss / count)*100;
