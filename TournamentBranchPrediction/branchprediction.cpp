@@ -16,14 +16,15 @@ BranchHistoryTable::BranchHistoryTable() {
 
 
 LocalHistory::LocalHistory() {
-  localBranchHistory = new uint8_t[16];
+  localBranchHistory = new uint8_t[128];
   localTable = new BranchHistoryTable[1];
 }
 
 
 bool LocalHistory::makePrediction(int pc, string tont) {
-  int branch = pc & 0b1111;
+  int branch = pc & 0b1111111;
   int index = localBranchHistory[branch];
+  //index = index ^ (pc & 0b1111111111);  // XOR with PC
   int prediction = localTable[0].predictions[index];
   bool localMiss = false;
 
