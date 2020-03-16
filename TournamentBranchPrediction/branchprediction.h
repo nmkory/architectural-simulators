@@ -5,11 +5,6 @@
 
 using namespace std;
 
-// struct predictor {
-//  // two-bit unsigned field,
-//  uint8_t twobits : 2;
-// };
-
 
 class BranchHistoryTable {
 public:
@@ -20,10 +15,19 @@ public:
 };
 
 
+class LocalHistory {
+public:
+  uint8_t* localBranchHistory;
+  BranchHistoryTable *localTable;
+  bool makePrediction(int pc, string tont);
+  LocalHistory();
+};
+
 
 class BranchHistory {
 public:
   BranchHistoryTable *table;
+  LocalHistory *localHistory;
   int globalHistory = 0;
   bool twoBit;
   float count = 0;

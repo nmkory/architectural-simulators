@@ -6,11 +6,23 @@
 
 using namespace std;
 
+
 BranchHistoryTable::BranchHistoryTable() {
   predictions = new uint8_t[256];
   //used = new uint8_t[256];  //question 4
   memset(predictions, 0, sizeof(predictions));
   //memset(predictions, 0, sizeof(used));  //question 4
+}
+
+
+LocalHistory::LocalHistory() {
+  localBranchHistory = new uint8_t[16];
+  localTable = new BranchHistoryTable[1];
+}
+
+
+bool LocalHistory::makePrediction(int pc, string tont) {
+  return false;
 }
 
 
@@ -27,16 +39,20 @@ BranchHistory::BranchHistory(int m, int n) {
     twoBit = false;
   else
     twoBit = true;
+
+  localHistory = new LocalHistory();
 }
 
 float BranchHistory::makePrediction(ifstream &myReadFile) {
   int pc;  //program counter
   string tont;  //taken or not taken
   int prediction;
+  bool globalMiss;
   while((myReadFile >> hex >> pc).good()) {
       count++;
       myReadFile >> tont;
       pc = (pc & 0xFF);
+      globalMiss = false;  //reset globalMiss
 
       prediction = table[globalHistory].predictions[pc];
       /*  //question 4
@@ -47,7 +63,7 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
       */  //question 4
       if (twoBit == false) {
         if ((prediction == 0 && tont == "T") || (prediction == 1 && tont == "N")) {
-          miss++;
+          globalMiss = true;
           if (tont == "N")
             table[globalHistory].predictions[pc] = 0;
           else
@@ -59,13 +75,13 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
         switch (prediction) {
           case 0 :  //strong not taken
             if (tont == "T") {
-              miss++;
+              globalMiss = true;
               table[globalHistory].predictions[pc] = 1;
             }
             break;
           case 1 :  //weak not taken
             if (tont == "T") {
-              miss++;
+              globalMiss = true;
               table[globalHistory].predictions[pc] = 3;
             }
             else
@@ -75,18 +91,24 @@ float BranchHistory::makePrediction(ifstream &myReadFile) {
             if (tont == "T")
               table[globalHistory].predictions[pc] = 3;
             else {
-              miss++;
+              globalMiss = true;
               table[globalHistory].predictions[pc] = 0;
             }
             break;
           case 3 :  //strong taken
             if (tont == "N") {
-              miss++;
+              globalMiss = true;
               table[globalHistory].predictions[pc] = 2;
             }
             break;
         }
       }
+
+      if (globalMiss) {
+        miss++;
+      }
+
+
 
       if (numTables != 1) {
         globalHistory = (globalHistory >> 1);
